@@ -1,0 +1,28 @@
+{
+  "name": "codeowners-comment-action",
+  "version": "0.0.0",
+  "description": "Instantly see the codeowners of all changed files. Can help in code reviews.",
+  "author": "Elias Papavasileiou",
+  "keywords": [
+    "github",
+    "actions",
+    "codeowners",
+    "comment",
+    "files",
+    "changed"
+  ],
+  "homepage": "https://github.com/elias-pap/codeowners-comment-action#readme",
+  "bugs": {
+    "url": "https://github.com/elias-pap/codeowners-comment-action/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elias-pap/codeowners-comment-action.git"
+  },
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

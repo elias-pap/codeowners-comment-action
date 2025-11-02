@@ -1,0 +1,5 @@
+name: Codeowners comment
+description: Instantly see the codeowners of all changed files. Can help in code reviews.
+runs:
+  using: node24
+  main: dist/index.js

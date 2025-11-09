@@ -27,7 +27,8 @@
   },
   "dependencies": {
     "@actions/core": "1.11.1",
-    "@actions/github": "6.0.1"
+    "@actions/github": "6.0.1",
+    "@snyk/github-codeowners": "1.1.0"
   },
   "devDependencies": {
     "@types/node": "24.10.0",

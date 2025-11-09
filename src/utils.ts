@@ -1,4 +1,4 @@
-import { debug, setFailed } from "@actions/core";
+import { debug, error, setFailed } from "@actions/core";
 
 export const isArray = (array: any[]) => Array.isArray(array);
 
@@ -11,12 +11,11 @@ export const fail = (message: string) => {
 };
 
 export const logError = (message: string) => {
-  console.error(addProjectPrefix(message));
+  error(addProjectPrefix(message));
   return null;
 };
 
 export const logDebug = (message: string) => {
-  console.debug(addProjectPrefix(message));
   debug(addProjectPrefix(message));
   return null;
 };

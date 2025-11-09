@@ -23,12 +23,16 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
+    "clean-init": "npm run clean && npm run init",
+    "clean": "rm -rf node_modules package-lock.json",
+    "init": "npm i",
+    "dev": "node src/index.ts",
     "build": "vite build"
   },
   "dependencies": {
     "@actions/core": "1.11.1",
     "@actions/github": "6.0.1",
-    "@snyk/github-codeowners": "1.1.0"
+    "codeowners": "5.1.1"
   },
   "devDependencies": {
     "@types/node": "24.10.0",

@@ -53,7 +53,7 @@ const main = async () => {
   const changedFiles = await getChangedFiles();
   if (!changedFiles) return logError("No changed files found.");
 
-  logDebug(`Detected changed files: ${changedFiles.join(", ")}`);
+  logDebug(`Detected changed files: ${changedFiles.join("\n")}`);
 };
 
 main();

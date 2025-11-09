@@ -1,5 +1,8 @@
+import { builtinModules } from "module";
 import { resolve } from "path";
 import { defineConfig } from "vite";
+
+const builtin = [...builtinModules, ...builtinModules.map((m) => `node:${m}`)];
 
 export default defineConfig({
   build: {
@@ -10,7 +13,7 @@ export default defineConfig({
     },
     target: "node20",
     rollupOptions: {
-      external: ["@actions/core", "@actions/github"],
+      external: builtin,
     },
   },
 });

@@ -1,7 +1,7 @@
 {
   "name": "@elias-pap/codeowners-comment-action",
   "version": "0.0.0",
-  "description": "Instantly see the codeowners of all changed files. Can help in code reviews.",
+  "description": "Instantly see the code owners of all files being changed by a pull request. Helps pull request authors to quickly find which teams or individuals to ask for a review.",
   "author": "Elias Papavasileiou",
   "keywords": [
     "github",

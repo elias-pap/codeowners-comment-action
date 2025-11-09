@@ -1,6 +1,6 @@
-import { getInput, debug, setOutput } from "@actions/core";
+import { getInput } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
-import { fail, isArray, isEmptyArray, logError } from "./utils";
+import { fail, isArray, isEmptyArray, logDebug, logError } from "./utils";
 
 const getChangedFiles = async () => {
   const { payload } = context;
@@ -53,7 +53,7 @@ const main = async () => {
   const changedFiles = await getChangedFiles();
   if (!changedFiles) return logError("No changed files found.");
 
-  debug(`Detected changed files: ${changedFiles.join(", ")}`);
+  logDebug(`Detected changed files: ${changedFiles.join(", ")}`);
 };
 
 main();

@@ -16717,7 +16717,7 @@ const ha = (A) => Array.isArray(A), Yg = (A) => ha(A) && A.length === 0, he = (A
   const A = await xg();
   if (!A) return _g("No changed files found.");
   Jg(`Detected changed files:
-${A.join(`
-`)}`);
+-> ${A.join(`
+-> `)}`);
 };
 Hg();

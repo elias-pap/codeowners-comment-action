@@ -1,10 +1,10 @@
 import { debug, error, getInput, setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
+import Codeowners from "codeowners";
 
 const isArray = (array: any[]) => Array.isArray(array);
 
-const isEmptyArray = (array: any[]) =>
-  isArray(array) && array.length === 0;
+const isEmptyArray = (array: any[]) => isArray(array) && array.length === 0;
 
 const fail = (message: string) => {
   setFailed(addProjectPrefix(message));
@@ -69,4 +69,16 @@ export const getChangedFiles = async () => {
     return fail("changedFilenames contains invalid values.");
 
   return changedFilenames;
+};
+
+export const getOwnersPerFile = (changedFiles: string[]) => {
+  const codeowners = new Codeowners();
+  if (!codeowners) return fail("codeowners could not be instantiated.");
+
+  let ownersPerFile = new Map<string, string[]>();
+  for (const changedFile of changedFiles) {
+    ownersPerFile.set(changedFile, codeowners.getOwner(changedFile));
+  }
+
+  return ownersPerFile;
 };

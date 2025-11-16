@@ -113,7 +113,7 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
         let ownerWithoutAt = owner.slice(1);
         return `[${ownerWithoutAt}](${getOwnerLink(ownerWithoutAt)})`;
       })
-      .join(",");
+      .join(", ");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);
   }

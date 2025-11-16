@@ -4,6 +4,7 @@ import {
   getOwnersPerFile,
   logDebug,
   logError,
+  postComment,
 } from "./utils.ts";
 
 const main = async () => {
@@ -24,6 +25,8 @@ const main = async () => {
   logDebug(
     `Comment to be posted:\n-> ${comment}`
   );
+
+  await postComment(comment);
 };
 
 main();

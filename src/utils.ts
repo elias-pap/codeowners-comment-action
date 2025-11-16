@@ -94,15 +94,21 @@ export const getOwnersPerFile = (changedFiles: string[]) => {
   return ownersPerFile;
 };
 
+const getOwnerLink = (owner: string) => {
+  if (!owner.includes("/")) return `https://github.com/${owner}`;
+  let [org, ownerTeam] = owner.split("/");
+  return `https://github.com/orgs/${org}/teams/${ownerTeam}`;
+};
+
 export const getComment = (ownersPerFile: Map<string, string[]>) => {
   if (!ownersPerFile) return fail("ownersPerFile not found.");
 
   let commentLines: string[] = [];
-  commentLines.push("## 🔬 Changed Files Owners");
+  commentLines.push("## 🔬 Owners of Changed Files");
   for (const [file, owners] of ownersPerFile) {
     let changedFile = `\`${file}\``;
     let separatorIcon = isArrayEmpty(owners) ? "🔓" : "🔒";
-    let changedFileOwners = owners.map(owner => `\`${owner}\``).join(" ");
+    let changedFileOwners = owners.map((owner) => `[${owner}](${getOwnerLink(owner)})`).join("|");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);
   }

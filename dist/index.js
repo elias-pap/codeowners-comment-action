@@ -18596,16 +18596,20 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
     i.set(r, E.getOwner(r));
   return i;
 }, nl = (e) => {
+  if (!e.includes("/")) return `https://github.com/${e}`;
+  let [E, i] = e.split("/");
+  return `https://github.com/orgs/${E}/teams/${i}`;
+}, ol = (e) => {
   if (!e) return rA("ownersPerFile not found.");
   let E = [];
-  E.push("## 🔬 Changed Files Owners");
+  E.push("## 🔬 Owners of Changed Files");
   for (const [r, A] of e) {
-    let c = `\`${r}\``, n = tl(A) ? "🔓" : "🔒", p = A.map((Q) => `\`${Q}\``).join(" "), a = `${c}${n}${p}`;
+    let c = `\`${r}\``, n = tl(A) ? "🔓" : "🔒", p = A.map((Q) => `[${Q}](${nl(Q)})`).join("|"), a = `${c}${n}${p}`;
     E.push(a);
   }
   return E.join(`
 `);
-}, ol = async (e) => {
+}, il = async (e) => {
   const E = Ic();
   if (!E)
     return rA("Github environment could not be parsed.");
@@ -18616,7 +18620,7 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
     issue_number: c,
     body: e
   });
-}, il = async () => {
+}, al = async () => {
   const e = await rl();
   if (!e) return on("No changed files found.");
   an(`Detected changed files:
@@ -18630,11 +18634,11 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
       Object.fromEntries(E)
     )}`
   );
-  const i = nl(E);
+  const i = ol(E);
   if (!i) return on("No comment found.");
   an(
     `Comment to be posted:
 -> ${i}`
-  ), await ol(i);
+  ), await il(i);
 };
-il();
+al();

@@ -6,6 +6,8 @@ const isArray = (array: any[]) => Array.isArray(array);
 
 const isEmptyArray = (array: any[]) => isArray(array) && array.length === 0;
 
+const isArrayEmpty = (array: any[]) => array.length === 0;
+
 const fail = (message: string) => {
   setFailed(addProjectPrefix(message));
   return null;
@@ -96,10 +98,10 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
   if (!ownersPerFile) return fail("ownersPerFile not found.");
 
   let commentLines: string[] = [];
-  commentLines.push("## Owners of Changed Files");
+  commentLines.push("## 🔬 Changed Files Owners");
   for (const [file, owners] of ownersPerFile) {
     let changedFile = `\`${file}\``;
-    let separatorIcon = "🔒";
+    let separatorIcon = isArrayEmpty(owners) ? "🔓" : "🔒";
     let changedFileOwners = owners.join(" ");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);

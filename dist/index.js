@@ -18550,7 +18550,7 @@ function zE() {
   }, nn = p, nn;
 }
 var $E = zE();
-const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(e) && e.length === 0, rA = (e) => (tr.setFailed(Sn(e)), null), on = (e) => (tr.error(Sn(e)), null), an = (e) => (tr.debug(Sn(e)), null), Sn = (e) => `[👷 codeowners-comment-action] ${e}`, Ic = () => {
+const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(e) && e.length === 0, tl = (e) => e.length === 0, rA = (e) => (tr.setFailed(Sn(e)), null), on = (e) => (tr.error(Sn(e)), null), an = (e) => (tr.debug(Sn(e)), null), Sn = (e) => `[👷 codeowners-comment-action] ${e}`, Ic = () => {
   const { payload: e } = Hs.context;
   if (!e) return rA("payload not found.");
   const { pull_request: E } = e;
@@ -18572,7 +18572,7 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
   if (!n) return rA("repo not found.");
   const { number: p } = E;
   return p ? { octokit: r, owner: c, repo: n, pull_number: p } : rA("pull request number not found.");
-}, tl = async () => {
+}, rl = async () => {
   const e = Ic();
   if (!e)
     return rA("Github environment could not be parsed.");
@@ -18588,24 +18588,24 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
     return rA("changedFiles is an empty array.");
   const n = c.map(({ filename: p }) => p);
   return n.some((p) => p == null) ? rA("changedFilenames contains invalid values.") : n;
-}, rl = (e) => {
+}, sl = (e) => {
   const E = new el();
   if (!E) return rA("codeowners could not be instantiated.");
   let i = /* @__PURE__ */ new Map();
   for (const r of e)
     i.set(r, E.getOwner(r));
   return i;
-}, sl = (e) => {
+}, nl = (e) => {
   if (!e) return rA("ownersPerFile not found.");
   let E = [];
-  E.push("## Owners of Changed Files");
+  E.push("## 🔬 Changed Files Owners");
   for (const [r, A] of e) {
-    let c = `\`${r}\``, n = "🔒", p = A.join(" "), a = `${c}${n}${p}`;
+    let c = `\`${r}\``, n = tl(A) ? "🔓" : "🔒", p = A.map((Q) => `\`${Q}\``).join(" "), a = `${c}${n}${p}`;
     E.push(a);
   }
   return E.join(`
 `);
-}, nl = async (e) => {
+}, ol = async (e) => {
   const E = Ic();
   if (!E)
     return rA("Github environment could not be parsed.");
@@ -18616,13 +18616,13 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
     issue_number: c,
     body: e
   });
-}, ol = async () => {
-  const e = await tl();
+}, il = async () => {
+  const e = await rl();
   if (!e) return on("No changed files found.");
   an(`Detected changed files:
 -> ${e.join(`
 -> `)}`);
-  const E = rl(e);
+  const E = sl(e);
   if (!E) return on("No owners found.");
   an(
     `Detected owners per file:
@@ -18630,11 +18630,11 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
       Object.fromEntries(E)
     )}`
   );
-  const i = sl(E);
+  const i = nl(E);
   if (!i) return on("No comment found.");
   an(
     `Comment to be posted:
 -> ${i}`
-  ), await nl(i);
+  ), await ol(i);
 };
-ol();
+il();

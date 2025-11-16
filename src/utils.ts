@@ -102,7 +102,7 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
   for (const [file, owners] of ownersPerFile) {
     let changedFile = `\`${file}\``;
     let separatorIcon = isArrayEmpty(owners) ? "🔓" : "🔒";
-    let changedFileOwners = owners.join(" ");
+    let changedFileOwners = owners.map(owner => `\`${owner}\``).join(" ");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);
   }

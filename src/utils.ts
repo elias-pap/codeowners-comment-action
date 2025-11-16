@@ -82,3 +82,20 @@ export const getOwnersPerFile = (changedFiles: string[]) => {
 
   return ownersPerFile;
 };
+
+export const getComment = (ownersPerFile: Map<string, string[]>) => {
+  if (!ownersPerFile) return fail("ownersPerFile not found.");
+
+  let commentLines: string[] = [];
+  commentLines.push("## Owners of Changed Files");
+  for (const [file, owners] of ownersPerFile) {
+    let changedFile = `\`${file}\``;
+    let separatorIcon = "🔒";
+    let changedFileOwners = owners.join(" ");
+    let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
+    commentLines.push(line);
+  }
+
+  let comment = commentLines.join("\n");
+  return comment;
+};

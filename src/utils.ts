@@ -108,7 +108,12 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
   for (const [file, owners] of ownersPerFile) {
     let changedFile = `\`${file}\``;
     let separatorIcon = isArrayEmpty(owners) ? "🔓" : "🔒";
-    let changedFileOwners = owners.map((owner) => `[${owner}](${getOwnerLink(owner)})`).join("|");
+    let changedFileOwners = owners
+      .map((owner) => {
+        let ownerWithoutAt = owner.slice(1);
+        return `[${ownerWithoutAt}](${getOwnerLink(ownerWithoutAt)})`;
+      })
+      .join(",");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);
   }

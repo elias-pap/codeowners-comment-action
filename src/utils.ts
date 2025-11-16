@@ -6,6 +6,8 @@ const isArray = (array: any[]) => Array.isArray(array);
 
 const isEmptyArray = (array: any[]) => isArray(array) && array.length === 0;
 
+const isArrayEmpty = (array: any[]) => array.length === 0;
+
 const fail = (message: string) => {
   setFailed(addProjectPrefix(message));
   return null;
@@ -24,7 +26,7 @@ export const logDebug = (message: string) => {
 const addProjectPrefix = (message: string) =>
   `[👷 codeowners-comment-action] ${message}`;
 
-export const getChangedFiles = async () => {
+const parseGithubEnvironment = () => {
   const { payload } = context;
   if (!payload) return fail("payload not found.");
 
@@ -52,6 +54,15 @@ export const getChangedFiles = async () => {
 
   const { number: pull_number } = pull_request;
   if (!pull_number) return fail("pull request number not found.");
+
+  return { octokit, owner, repo, pull_number };
+};
+
+export const getChangedFiles = async () => {
+  const githubEnvironment = parseGithubEnvironment();
+  if (!githubEnvironment)
+    return fail("Github environment could not be parsed.");
+  let { octokit, owner, repo, pull_number } = githubEnvironment;
 
   // Returns up to 3000 files.
   const { data: changedFiles } = await octokit.rest.pulls.listFiles({
@@ -83,19 +94,44 @@ export const getOwnersPerFile = (changedFiles: string[]) => {
   return ownersPerFile;
 };
 
+const getOwnerLink = (owner: string) => {
+  if (!owner.includes("/")) return `https://github.com/${owner}`;
+  let [org, ownerTeam] = owner.split("/");
+  return `https://github.com/orgs/${org}/teams/${ownerTeam}`;
+};
+
 export const getComment = (ownersPerFile: Map<string, string[]>) => {
   if (!ownersPerFile) return fail("ownersPerFile not found.");
 
   let commentLines: string[] = [];
-  commentLines.push("## Owners of Changed Files");
+  commentLines.push("## 🔬 Owners of Changed Files");
   for (const [file, owners] of ownersPerFile) {
     let changedFile = `\`${file}\``;
-    let separatorIcon = "🔒";
-    let changedFileOwners = owners.join(" ");
+    let separatorIcon = isArrayEmpty(owners) ? "🔓" : "🔒";
+    let changedFileOwners = owners
+      .map((owner) => {
+        let ownerWithoutAt = owner.slice(1);
+        return `[${ownerWithoutAt}](${getOwnerLink(ownerWithoutAt)})`;
+      })
+      .join(", ");
     let line = `${changedFile}${separatorIcon}${changedFileOwners}`;
     commentLines.push(line);
   }
 
   let comment = commentLines.join("\n");
   return comment;
+};
+
+export const postComment = async (comment: string) => {
+  const githubEnvironment = parseGithubEnvironment();
+  if (!githubEnvironment)
+    return fail("Github environment could not be parsed.");
+  let { octokit, owner, repo, pull_number } = githubEnvironment;
+
+  await octokit.rest.issues.createComment({
+    owner,
+    repo,
+    issue_number: pull_number,
+    body: comment,
+  });
 };

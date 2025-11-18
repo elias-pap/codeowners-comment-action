@@ -31,6 +31,10 @@ jobs:
         uses: elias-pap/codeowners-comment-action@v0.0.1
 ```
 
+## Limitations
+
+Currently, up to 3000 changed files are supported. If a PR changes more than 3000 files, some files might not appear in the comment.
+
 ## Troubleshooting
 
 If you think the action is not working properly, you can enable [debug logging](https://github.blog/changelog/2022-05-24-github-actions-re-run-jobs-with-debug-logging/) to see extra debug logs in the job output. They begin with `[👷 codeowners-comment-action]`.

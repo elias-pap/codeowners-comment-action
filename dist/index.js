@@ -18604,7 +18604,7 @@ const el = /* @__PURE__ */ Na($E), Bc = (e) => Array.isArray(e), Al = (e) => Bc(
   let E = [];
   E.push("## 🔬 Owners of Changed Files");
   for (const [r, A] of e) {
-    let c = `\`${r}\``, n = tl(A) ? "🔓" : "🔒", p = A.map((Q) => {
+    let c = `\`${r}\``, n = tl(A) ? " 🔓" : " 🔒 ", p = A.map((Q) => {
       let o = Q.slice(1);
       return `[${o}](${nl(o)})`;
     }).join(", "), a = `${c}${n}${p}`;

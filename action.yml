@@ -1,5 +1,9 @@
 name: Codeowners Comment
-description: Instantly see the code owners of all files being changed by a pull request. Helps pull request authors to quickly find which teams or individuals to ask for a review.
+description: Instantly see the owners of changed files in a pull request. Quickly find which users or teams to ask for review.
+author: Elias Papavasileiou
+branding:
+  icon: lock
+  color: green
 inputs:
   token:
     description: The github token needed for access to repo resources.

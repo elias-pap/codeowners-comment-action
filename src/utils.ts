@@ -8,13 +8,8 @@ const isEmptyArray = (array: any[]) => isArray(array) && array.length === 0;
 
 const isArrayEmpty = (array: any[]) => array.length === 0;
 
-const fail = (message: string) => {
+export const fail = (message: string) => {
   setFailed(addProjectPrefix(message));
-  return null;
-};
-
-export const logError = (message: string) => {
-  error(addProjectPrefix(message));
   return null;
 };
 
@@ -26,7 +21,7 @@ export const logDebug = (message: string) => {
 const addProjectPrefix = (message: string) =>
   `[👷 codeowners-comment-action] ${message}`;
 
-const parseGithubEnvironment = () => {
+export const parseGithubEnvironment = () => {
   const { payload } = context;
   if (!payload) return fail("payload not found.");
 
@@ -58,10 +53,9 @@ const parseGithubEnvironment = () => {
   return { octokit, owner, repo, pull_number };
 };
 
-export const getChangedFiles = async () => {
-  const githubEnvironment = parseGithubEnvironment();
-  if (!githubEnvironment)
-    return fail("Github environment could not be parsed.");
+export const getChangedFiles = async (
+  githubEnvironment: Exclude<ReturnType<typeof parseGithubEnvironment>, null>
+) => {
   let { octokit, owner, repo, pull_number } = githubEnvironment;
 
   // Returns up to 3000 files.
@@ -122,16 +116,62 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
   return comment;
 };
 
-export const postComment = async (comment: string) => {
-  const githubEnvironment = parseGithubEnvironment();
-  if (!githubEnvironment)
-    return fail("Github environment could not be parsed.");
+const getCommentMarker = (pull_number: number) => {
+  let markerTitle = "codeowners-comment-action-marker";
+  let randomString = "sQ3y3cEm7mcooZ2";
+  return `<!-- ${markerTitle}-${pull_number}-${randomString} -->`;
+};
+
+/**
+ * Posts the comment.
+ * - If the comment doesn't exist already, it creates a new one.
+ * - If the comment already exists, it updates it, unless the new comment is
+ *   the same as the existing one.
+ */
+export const postComment = async ({
+  comment,
+  githubEnvironment,
+}: {
+  comment: string;
+  githubEnvironment: Exclude<ReturnType<typeof parseGithubEnvironment>, null>;
+}) => {
   let { octokit, owner, repo, pull_number } = githubEnvironment;
 
+  const { data: pullRequestComments } = await octokit.rest.issues.listComments({
+    owner,
+    repo,
+    issue_number: pull_number,
+  });
+  const commentMarker = getCommentMarker(pull_number);
+  if (!commentMarker) return fail("Comment marker could not be created.");
+
+  const existingComments = pullRequestComments.filter(
+    (comment) => comment.body && comment.body.includes(commentMarker)
+  );
+  if (existingComments.length > 1)
+    return fail(
+      "Multiple codeowners comment action comments found. Only one should exist."
+    );
+
+  let commentBody = `${commentMarker}\n${comment}`;
+  if (existingComments.length === 1) {
+    let { id: comment_id, body } = existingComments[0];
+    if (commentBody === body)
+      return logDebug(
+        "Comment already exists with same text. Skipping update."
+      );
+    await octokit.rest.issues.updateComment({
+      owner,
+      repo,
+      comment_id,
+      body: commentBody,
+    });
+    return;
+  }
   await octokit.rest.issues.createComment({
     owner,
     repo,
     issue_number: pull_number,
-    body: comment,
+    body: commentBody,
   });
 };

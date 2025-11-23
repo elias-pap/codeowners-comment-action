@@ -1,6 +1,6 @@
 {
   "name": "@elias-pap/codeowners-comment-action",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Instantly see the owners of changed files in a pull request. Quickly find which users or teams to ask for review.",
   "author": "Elias Papavasileiou",
   "keywords": [
@@ -43,11 +43,11 @@
   "devEngines": {
     "runtime": {
       "name": "node",
-      "version": "24.10.0"
+      "version": "24.11.1"
     },
     "packageManager": {
       "name": "npm",
-      "version": "11.6.1"
+      "version": "11.6.2"
     }
   }
 }

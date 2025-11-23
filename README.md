@@ -22,13 +22,13 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Use Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 24.10.0
+          node-version: 24.11.1
       - name: Post comment
-        uses: elias-pap/codeowners-comment-action@v0.0.1
+        uses: elias-pap/codeowners-comment-action@v0.0.2
 ```
 
 ## Limitations

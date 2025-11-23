@@ -160,7 +160,9 @@ export const postComment = async (comment: string) => {
 
   let commentBody = `${commentMarker}\n${comment}`;
   if (existingComments.length === 1) {
-    let { id: comment_id } = existingComments[0];
+    let { id: comment_id, body } = existingComments[0];
+    if (commentBody === body)
+      return logDebug("Comment already posted. Skipping update.");
     await octokit.rest.issues.updateComment({
       owner,
       repo,

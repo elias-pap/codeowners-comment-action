@@ -22,9 +22,7 @@ const main = async () => {
 
   const comment = getComment(ownersPerFile);
   if (!comment) return logError("No comment found.");
-  logDebug(
-    `Comment to be posted:\n-> ${comment}`
-  );
+  logDebug(`Comment to be posted:\n-> ${comment}`);
 
   await postComment(comment);
 };

@@ -122,16 +122,57 @@ export const getComment = (ownersPerFile: Map<string, string[]>) => {
   return comment;
 };
 
+const getCommentMarker = () => {
+  const githubEnvironment = parseGithubEnvironment();
+  if (!githubEnvironment)
+    return fail("Github environment could not be parsed.");
+  let { pull_number } = githubEnvironment;
+
+  let markerTitle = "codeowners-comment-action-marker";
+  let randomString = "sQ3y3cEm7mcooZ2";
+  return `<!-- ${markerTitle}-${pull_number}-${randomString} -->`;
+};
+
+/**
+ * Upserts the comment.
+ */
 export const postComment = async (comment: string) => {
   const githubEnvironment = parseGithubEnvironment();
   if (!githubEnvironment)
     return fail("Github environment could not be parsed.");
   let { octokit, owner, repo, pull_number } = githubEnvironment;
 
+  const { data: pullRequestComments } = await octokit.rest.issues.listComments({
+    owner,
+    repo,
+    issue_number: pull_number,
+  });
+  const commentMarker = getCommentMarker();
+  if (!commentMarker) return fail("Comment marker could not be created.");
+
+  const existingComments = pullRequestComments.filter(
+    (comment) => comment.body && comment.body.includes(commentMarker)
+  );
+  if (existingComments.length > 1)
+    return fail(
+      "Multiple codeowners comment action comments found. Only one should exist."
+    );
+
+  let commentBody = `${commentMarker}\n${comment}`;
+  if (existingComments.length === 1) {
+    let { id: comment_id } = existingComments[0];
+    await octokit.rest.issues.updateComment({
+      owner,
+      repo,
+      comment_id,
+      body: commentBody,
+    });
+    return;
+  }
   await octokit.rest.issues.createComment({
     owner,
     repo,
     issue_number: pull_number,
-    body: comment,
+    body: commentBody,
   });
 };
